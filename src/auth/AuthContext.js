@@ -1,6 +1,7 @@
 
 import { useCallback, useState } from 'react';
 import { AuthContext } from './Context';
+import { fetchSinToken } from '../helpers/fetch';
 
 const initialState = {
   uid: null,
@@ -14,8 +15,26 @@ export const AuthProvider = ( { children } ) => {
 
   const [ auth, setAuth ] = useState( initialState );
 
-  const login = ( email, password ) => {
-    console.log( email, password );
+  const login = async ( email, password ) => {
+
+    const respuesta = await fetchSinToken( 'login', {email, password}, 'POST' );
+
+    if( respuesta.ok){
+
+      localStorage.setItem('token', respuesta.token)
+      const { usuario } = respuesta;
+
+      setAuth({
+        uid: usuario.uid,
+        checking: false,
+        logged: true,
+        name: usuario.nombre,
+        email: usuario.email
+      })
+    }
+    return respuesta.ok
+
+
   };
 
   const register = ( name, email, password ) => {
@@ -38,6 +57,7 @@ export const AuthProvider = ( { children } ) => {
       register,
       verificaToken,
       logout,
+      auth
     } }>
       { children }
     </AuthContext.Provider>

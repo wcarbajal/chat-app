@@ -1,15 +1,34 @@
 
-const baseUrl = process.env.REACT_APP_API_URL ;
+const baseUrl = process.env.REACT_APP_API_URL;
 
 export const fetchSinToken = async ( endpoint, data, method = 'GET' ) => {
 
-  const url = `${ baseUrl}/${endpoint}`
+ try {
+  
+   const url = `${ baseUrl }/${ endpoint }`;
 
-  if (method === 'GET') {
+  if ( method === 'GET' ) {
     
-    const resp = await fetch( url );
-    return await resp.json();
-    
+    const respuesta = await fetch( url );
+    return await respuesta.json();
+
+  } else {
+    const respuesta = await fetch( url, {
+      method,
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify( data )
+
+    } );
+    return await respuesta.json();
   }
 
-}
+ } catch (error) {
+  console.error('Error in fetchSinToken:', error);
+  throw error;
+  
+ }
+  
+
+};
