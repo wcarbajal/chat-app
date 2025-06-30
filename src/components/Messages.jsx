@@ -11,6 +11,7 @@ export const Messages = () => {
 
 
       <div className="msg_history">
+        
 
         {
           msgs.map( (index, msg) => (
